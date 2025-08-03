@@ -50,7 +50,6 @@ export function getCustomShapePath(custShapType, w, h) {
   const arcToNodes = pathNodes['a:arcTo']
   let closeNode = getTextByPathList(pathNodes, ['a:close'])
   if (!Array.isArray(moveToNode)) moveToNode = [moveToNode]
-  if (!Array.isArray(lnToNodes)) lnToNodes = [lnToNodes]
 
   const multiSapeAry = []
   if (moveToNode.length > 0) {
@@ -72,6 +71,7 @@ export function getCustomShapePath(custShapType, w, h) {
       }
     })
     if (lnToNodes) {
+      if (!Array.isArray(lnToNodes)) lnToNodes = [lnToNodes]
       Object.keys(lnToNodes).forEach(key => {
         const lnToPtNode = lnToNodes[key]['a:pt']
         if (lnToPtNode) {
