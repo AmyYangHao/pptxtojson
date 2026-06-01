@@ -39,6 +39,7 @@ export async function parse(file) {
   const slides = [];
 
   const zip = await JSZip.loadAsync(file);
+  console.log("parse function ----> ", file, zip);
 
   const filesInfo = await getContentTypes(zip);
   const { width, height, defaultTextStyle } = await getSlideInfo(zip);
@@ -280,21 +281,26 @@ async function processSingleSlide(
       // case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink":
       default:
         console.log(
-          "nimamam------------",
-          relationshipArrayItem,
-          relationshipArrayItem["attrs"]["Id"],
+          "img/chart/hyperlink------------",
+          relationshipArrayItem["attrs"],
           slideResObj
         );
 
         if (relationshipArrayItem["attrs"]["Target"] == "NULL") {
-          console.log("zxcvbnmmedia", relationshipArrayItem, nullTarget);
+          console.log(
+            "nullTarget ------------",
+            relationshipArrayItem["attrs"],
+            nullTarget
+          );
           slideResObj[relationshipArrayItem["attrs"]["Id"]] = {
             type: relationshipArrayItem["attrs"]["Type"].replace(
               // "http://schemas.openxmlformats.org/officeDocument/2006/relationships/",
               getFileTypeName(relationshipArrayItem["attrs"]["Type"], ""),
               ""
             ),
-            target: nullTarget["attrs"]["Target"].replace("../", "ppt/"),
+            target: nullTarget
+              ? nullTarget["attrs"]["Target"].replace("../", "ppt/")
+              : relationshipArrayItem["attrs"]["Target"],
           };
         } else {
           slideResObj[relationshipArrayItem["attrs"]["Id"]] = {
@@ -1254,7 +1260,7 @@ async function processPicNode(node, warpObj, source) {
       audioBlob = URL.createObjectURL(new Blob([uInt8ArrayAudio]));
     }
   }
-  console.log("z3333333333", audioBlob);
+  console.log("z3333333333", audioFileExt, audioBlob);
 
   if (videoNode && !isVdeoLink) {
     return {
